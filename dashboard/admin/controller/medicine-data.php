@@ -63,8 +63,8 @@ class MedicineSlot
             $slots[] = [
                 "slot_id" => (int)$row["slot_id"],
                 "medicine_name" => $row["medicine_name"] ?? "No Medicine Assigned",
-                "dispense_time" => $row["dispense_time"] ?? "00:00:00",
-                "dispense_days" => $dayNames
+                "dispenseTime" => $row["dispense_time"] ?? "00:00:00",
+                "dispenseDays" => $dayNames
             ];
         }
 
