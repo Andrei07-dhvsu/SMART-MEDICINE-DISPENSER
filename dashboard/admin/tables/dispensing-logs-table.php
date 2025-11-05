@@ -81,7 +81,7 @@ if($total_data > 0)
             <td>'.$row["id"].'</td>
             <td>'.$row["medicine_name"].'</td>
             <td>'.$row["day"].'</td>
-            <td>'.$row["dispense_time"].'</td> 
+            <td>' . date("h:i A", strtotime($row["dispense_time"])) . '</td>
             </tr>
         ';
     }
