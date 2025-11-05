@@ -184,7 +184,7 @@ public function proxyUrl() {
   unset($_SESSION['adminSession']);
 
   $_SESSION['status_title'] = 'Logout!';
-  $_SESSION['status'] = 'Thank you for using WattzUp';
+  $_SESSION['status'] = 'Thank you for using Automed';
   $_SESSION['status_code'] = 'success';
   $_SESSION['status_timer'] = 40000;    
   header('Location: ../../../');
