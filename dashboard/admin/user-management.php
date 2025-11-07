@@ -9,7 +9,7 @@ include_once 'header.php';
 	<?php echo $header_dashboard->getHeaderDashboard() ?>
 	<link href='https://fonts.googleapis.com/css?family=Antonio' rel='stylesheet'>
 
-	<title>Reports</title>
+	<title>User Management</title>
 </head>
 
 <body>
@@ -46,14 +46,14 @@ include_once 'header.php';
 		<main>
 			<div class="head-title">
 				<div class="left">
-					<h1>Reports</h1>
+					<h1>User Management</h1>
 					<ul class="breadcrumb">
 						<li>
 							<a class="active" href="./">Home</a>
 						</li>
 						<li>|</li>
 						<li>
-							<a href="">Reports</a>
+							<a href="">User Management</a>
 						</li>
 					</ul>
 				</div>
@@ -62,9 +62,8 @@ include_once 'header.php';
 			<div class="table-data">
 				<div class="order">
 					<div class="head">
-						<h3><i class='bx bxs-report'></i> Energy Monitoring Reports</h3>
+						<h3><i class='bx bxs-report'></i> List of User's</h3>
 					</div>
-
 					<!-- BODY -->
 					<section class="data-table">
 						<div class="searchBx">
@@ -73,7 +72,7 @@ include_once 'header.php';
 
 						<div class="table">
 							<div id="dynamic_content">
-							</div>
+						</div>
 
 					</section>
 				</div>
@@ -94,7 +93,7 @@ include_once 'header.php';
 
 			function load_data(page, query = '') {
 				$.ajax({
-					url: "tables/energy-warning-logs-table.php",
+					url: "tables/user-lists-table.php",
 					method: "POST",
 					data: {
 						page: page,

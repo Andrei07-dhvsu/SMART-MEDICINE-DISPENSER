@@ -1,7 +1,7 @@
 <?php
 include_once '../../../config/settings-configuration.php';
 include_once __DIR__ . '/../../../database/dbconfig.php';
-require_once __DIR__ . '/../authentication/admin-class.php';
+require_once __DIR__ . '/../authentication/user-class.php';
 
 class Medicine
 {
@@ -13,7 +13,7 @@ class Medicine
         $database = new Database();
         $db = $database->dbConnection();
         $this->conn = $db;
-        $this->admin = new ADMIN();
+        $this->admin = new USER();
     }
 
     // ==============================

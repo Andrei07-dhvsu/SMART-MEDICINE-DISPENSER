@@ -58,15 +58,8 @@ $footer_signin = new FooterSignin();
                                         Email is required!
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="access_key">Access Key</label>
-                                    <input id="access_key" type="text" class="form-control" name="access_key" required autofocus>
-                                    <div class="invalid-feedback">
-                                        Access Key is required (please obtain the access key from the landlord)! 
-                                    </div>
-                                </div>
                                 <div class="form-group m-0">
-                                    <button type="submit" id="submit" class="btn btn-dark btn-block" name="btn-signup">
+                                    <button type="submit" id="submit" class="btn btn-primary btn-block" name="btn-signup">
                                         Sign Up
                                     </button>
                                 </div>

@@ -1,14 +1,17 @@
 <?php
 require_once 'admin-class.php';
+require_once __DIR__ . '/../../user/authentication/user-class.php';
 
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 $admin = new ADMIN();
+$user = new USER();
 
 $site_secret_key = $admin->siteSecretKey();
 
-if ($admin->isUserLoggedIn() != "") {
+if ($admin->isUserLoggedIn() != "" || $user->isUserLoggedIn() != "") {
     $admin->redirect('');
 }
 
@@ -48,7 +51,7 @@ if (isset($_POST['btn-signin'])) {
             if ($existingData['user_type'] == 0) { //superadmin
                 if ($superadmin->login($email, $upass)) {
                     $_SESSION['status_title'] = "Hey !";
-                    $_SESSION['status'] = "Welcome to WattzUp! ";
+                    $_SESSION['status'] = "Welcome to AutoMed! ";
                     $_SESSION['status_code'] = "success";
                     $_SESSION['status_timer'] = 10000;
                     header("Location: ../../superadmin/");
@@ -57,7 +60,7 @@ if (isset($_POST['btn-signin'])) {
             } elseif ($existingData['user_type'] == 1) { //admin
                 if ($admin->login($email, $upass)) {
                     $_SESSION['status_title'] = "Hey !";
-                    $_SESSION['status'] = "Welcome to WattzUp! ";
+                    $_SESSION['status'] = "Welcome to AutoMed! ";
                     $_SESSION['status_code'] = "success";
                     $_SESSION['status_timer'] = 10000;
                     header("Location: ../");
@@ -66,7 +69,7 @@ if (isset($_POST['btn-signin'])) {
             } elseif ($existingData['user_type'] == 2) { //user
                 if ($user->login($email, $upass)) {
                     $_SESSION['status_title'] = "Hey !";
-                    $_SESSION['status'] = "Welcome WattzUp! ";
+                    $_SESSION['status'] = "Welcome AutoMed! ";
                     $_SESSION['status_code'] = "success";
                     $_SESSION['status_timer'] = 10000;
                     unset($_SESSION['property_details']);

@@ -12,9 +12,9 @@ if(!$user->isUserLoggedIn())
 // Use the runQuery method to prepare and execute queries.
 function get_total_row($user)
 {
-    $pdoQuery = "SELECT COUNT(*) as total_rows FROM medicine_logs";
+    $pdoQuery = "SELECT COUNT(*) as total_rows FROM users WHERE user_type = :user_type AND account_status = :account_status";
     $pdoResult = $user->runQuery($pdoQuery);
-    $pdoResult->execute();
+    $pdoResult->execute([":user_type" => 2, ":account_status" => "active"]);
     $row = $pdoResult->fetch(PDO::FETCH_ASSOC);
     return $row['total_rows'];
 }
@@ -32,7 +32,7 @@ else
     $start = 0;
 }
 
-$query = "SELECT * FROM medicine_logs";
+$query = "SELECT * FROM users WHERE user_type = :user_type AND account_status = :account_status";
 
 $output = '';
 if($_POST['query'] != '') {
@@ -41,9 +41,10 @@ if($_POST['query'] != '') {
     $formatted_date = date("F j, Y", strtotime($search_term)); // Convert the search term to date format
 
     // Modify the query to search by email, activity, or formatted created_at date
-    $query .= ' AND medicine_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
-                OR dispense_time LIKE "%'.str_replace(' ', '%', $search_term).'%"
-                OR day LIKE "%'.str_replace(' ', '%', $search_term).'%"';
+    $query .= ' AND first_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
+                OR last_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
+                OR middle_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
+                OR email LIKE "%'.str_replace(' ', '%', $search_term).'%" ';
 }
 
 $query .= ' ORDER BY id DESC ';
@@ -52,12 +53,12 @@ $filter_query = $query . ' LIMIT '.$start.', '.$limit.'';
 
 // Use the runQuery method to prepare and execute the query.
 $statement = $user->runQuery($query);
-$statement->execute();
+$statement->execute([":user_type" => 2, ":account_status" => "active"]);
 $total_data = $statement->rowCount();
 
 // Use the runQuery method to prepare and execute the filtered query.
 $statement = $user->runQuery($filter_query);
-$statement->execute();
+$statement->execute([":user_type" => 2, ":account_status" => "active"]);
 $total_filter_data = $statement->rowCount();
 
 if($total_data > 0)
@@ -68,20 +69,31 @@ if($total_data > 0)
         </div>
         <thead>
             <th>#</th>
-            <th>MEDICINE NAME</th>
-            <th>DAY</th>
-            <th>TIME</th>
+            <th>PROFILE</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>ACTIONS</th>
+
         </thead>
     ';
 
     while($row = $statement->fetch(PDO::FETCH_ASSOC))
     {
+        if ($row["account_status"] == "active") {
+            $button = '<button type="button" class="btn btn-danger V"><a href="controller/user-controller?user_id='.$row["id"].'&disabled_user=1" class="delete"><i class="bx bxs-trash"></i></a></button>';
+            $status = '<button type="button" class="btn btn-success V" style="width: 80px;">Active</button>';
+          
+          }
+
         $output .= '
         <tr>
             <td>'.$row["id"].'</td>
-            <td>'.$row["medicine_name"].'</td>
-            <td>'.$row["day"].'</td>
-            <td>' . date("h:i A", strtotime($row["dispense_time"])) . '</td>
+            <td><a href="../../src/img/' . $row["profile"] . '" data-lightbox="images" data-title="Agent Valid ID"><img src="../../src/img/' . $row["profile"] . '"></a></td>
+            <td>'.$row["last_name"].', '.$row["first_name"].' '.$row["middle_name"].'</td>
+            <td>'.$row["email"].'</td>
+            <td>
+            '.$button.'
+            </td>  
             </tr>
         ';
     }

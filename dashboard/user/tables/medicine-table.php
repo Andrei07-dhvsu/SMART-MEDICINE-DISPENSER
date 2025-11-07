@@ -1,9 +1,9 @@
 <table class="table table-bordered table-hover">
 <?php
 
-require_once '../authentication/admin-class.php';
+require_once '../authentication/user-class.php';
 
-$user = new ADMIN();
+$user = new USER();
 if(!$user->isUserLoggedIn())
 {
  $user->redirect('../../../');
@@ -12,7 +12,7 @@ if(!$user->isUserLoggedIn())
 // Use the runQuery method to prepare and execute queries.
 function get_total_row($user)
 {
-    $pdoQuery = "SELECT COUNT(*) as total_rows FROM logs";
+    $pdoQuery = "SELECT COUNT(*) as total_rows FROM medicines ";
     $pdoResult = $user->runQuery($pdoQuery);
     $pdoResult->execute();
     $row = $pdoResult->fetch(PDO::FETCH_ASSOC);
@@ -32,8 +32,7 @@ else
     $start = 0;
 }
 
-$query = "SELECT logs.*, users.email FROM logs 
-          INNER JOIN users ON logs.user_id = users.id";
+$query = "SELECT * FROM medicines";
 
 $output = '';
 if($_POST['query'] != '') {
@@ -42,9 +41,8 @@ if($_POST['query'] != '') {
     $formatted_date = date("F j, Y", strtotime($search_term)); // Convert the search term to date format
 
     // Modify the query to search by email, activity, or formatted created_at date
-    $query .= ' WHERE users.email LIKE "%'.str_replace(' ', '%', $search_term).'%" 
-                OR logs.activity LIKE "%'.str_replace(' ', '%', $search_term).'%" 
-                OR DATE_FORMAT(logs.created_at, "%M %e, %Y") LIKE "%'.str_replace(' ', '%', $formatted_date).'%"';
+    $query .= ' AND medicine_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
+                OR description LIKE "%'.str_replace(' ', '%', $search_term).'%"';
 }
 
 $query .= ' ORDER BY id DESC ';
@@ -69,27 +67,25 @@ if($total_data > 0)
         </div>
         <thead>
             <th>#</th>
-            <th>USER</th>
-            <th>ACTIVITY</th>
-            <th>DATE ADDED</th>
+            <th>MEDICINE NAME</th>
+            <th>DESCRIPTION</th>
+            <th>DOSAGE</th>
+            <th>ACTION</th>
         </thead>
     ';
 
     while($row = $statement->fetch(PDO::FETCH_ASSOC))
     {
-        $user_id = $row["user_id"];
-
-        $pdoQuery = "SELECT * FROM users WHERE id = :id";
-        $pdoResult = $user->runQuery($pdoQuery);
-        $pdoResult->execute(array(":id" => $user_id));
-        $user_data = $pdoResult->fetch(PDO::FETCH_ASSOC);
-
         $output .= '
         <tr>
             <td>'.$row["id"].'</td>
-            <td>'.$user_data["email"].'</td>
-            <td>'.$row["activity"].'</td>
-            <td>'.date("F j, Y (h:i A)", strtotime($row['created_at'])).'</td>
+            <td>'.$row["medicine_name"].'</td>
+            <td>'.$row["description"].'</td>
+            <td>'.$row["dosage"].'mg</td>
+            <td>
+            <button type="button" class="btn btn-primary V"><a href="edit_medicine?id='.$row["id"].'" class="edit"><i class="bx bxs-edit"></i></a></button>
+            <button type="button" class="btn btn-danger V"><a href="controller/medicine-controller?id='.$row["id"].'&delete_medicine=1" class="delete"><i class="bx bxs-trash"></i></a></button>
+            </td>  
             </tr>
         ';
     }

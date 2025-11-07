@@ -1,18 +1,18 @@
 <table class="table table-bordered table-hover">
 <?php
 
-require_once '../authentication/admin-class.php';
+require_once '../authentication/USER-class.php';
 
-$user = new ADMIN();
+$user = new USER();
 if(!$user->isUserLoggedIn())
 {
- $user->redirect('../../../private/admin/');
+ $user->redirect('../../../');
 }
 
 // Use the runQuery method to prepare and execute queries.
 function get_total_row($user)
 {
-    $pdoQuery = "SELECT COUNT(*) as total_rows FROM medicines ";
+    $pdoQuery = "SELECT COUNT(*) as total_rows FROM medicine_logs";
     $pdoResult = $user->runQuery($pdoQuery);
     $pdoResult->execute();
     $row = $pdoResult->fetch(PDO::FETCH_ASSOC);
@@ -32,7 +32,7 @@ else
     $start = 0;
 }
 
-$query = "SELECT * FROM medicines";
+$query = "SELECT * FROM medicine_logs";
 
 $output = '';
 if($_POST['query'] != '') {
@@ -42,7 +42,8 @@ if($_POST['query'] != '') {
 
     // Modify the query to search by email, activity, or formatted created_at date
     $query .= ' AND medicine_name LIKE "%'.str_replace(' ', '%', $search_term).'%" 
-                OR description LIKE "%'.str_replace(' ', '%', $search_term).'%"';
+                OR dispense_time LIKE "%'.str_replace(' ', '%', $search_term).'%"
+                OR day LIKE "%'.str_replace(' ', '%', $search_term).'%"';
 }
 
 $query .= ' ORDER BY id DESC ';
@@ -68,9 +69,8 @@ if($total_data > 0)
         <thead>
             <th>#</th>
             <th>MEDICINE NAME</th>
-            <th>DESCRIPTION</th>
-            <th>DOSAGE</th>
-            <th>ACTION</th>
+            <th>DAY</th>
+            <th>TIME</th>
         </thead>
     ';
 
@@ -80,12 +80,8 @@ if($total_data > 0)
         <tr>
             <td>'.$row["id"].'</td>
             <td>'.$row["medicine_name"].'</td>
-            <td>'.$row["description"].'</td>
-            <td>'.$row["dosage"].'mg</td>
-            <td>
-            <button type="button" class="btn btn-primary V"><a href="edit_medicine?id='.$row["id"].'" class="edit"><i class="bx bxs-edit"></i></a></button>
-            <button type="button" class="btn btn-danger V"><a href="controller/medicine-controller?id='.$row["id"].'&delete_medicine=1" class="delete"><i class="bx bxs-trash"></i></a></button>
-            </td>  
+            <td>'.$row["day"].'</td>
+            <td>' . date("h:i A", strtotime($row["dispense_time"])) . '</td>
             </tr>
         ';
     }
