@@ -1,7 +1,7 @@
 <table class="table table-bordered table-hover">
 <?php
 
-require_once '../authentication/USER-class.php';
+require_once '../authentication/user-class.php';
 
 $user = new USER();
 if(!$user->isUserLoggedIn())
